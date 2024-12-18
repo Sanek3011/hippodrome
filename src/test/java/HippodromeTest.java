@@ -33,25 +33,45 @@ class HippodromeTest {
 
 
     @Test
-    void getHorsesTest() {
-        List<Horse> horses = getListOfHorses(30);
+    void getHorsesForTest() {
+        List<Horse> horses = getListOfHorses(30, false);
         Hippodrome hippo = new Hippodrome(horses);
         assertEquals(horses, hippo.getHorses());
     }
 
-    List<Horse> getListOfHorses(int capacity) {
+    List<Horse> getListOfHorses(int capacity, boolean isMock) {
         List<Horse> horses = new ArrayList<>();
         for (int i = 0; i < capacity; i++) {
-            horses.add(new Horse("Horse"+i, i));
+            if (isMock) {
+                horses.add(Mockito.mock(Horse.class));
+            }else{
+                horses.add(new Horse("Horse"+i, i, i));
+            }
         }
         return horses;
     }
 
     @Test
     void moveHippodromeTest() {
+        List<Horse> mockHorses = getListOfHorses(50, true);
+        Hippodrome hippo = new Hippodrome(mockHorses);
+        hippo.move();
+        for (Horse horse : mockHorses) {
+            Mockito.verify(horse).move();
+        }
     }
 
     @Test
-    void getWinner() {
+    void getWinnerTest() {
+        List<Horse> horses = new ArrayList<>();
+        Horse horse1 = new Horse("Horsyashak", 10, 10);
+        horses.add(horse1);
+        Horse horse2 = new Horse("Bingo", 10, 25);
+        horses.add(horse2);
+        Horse horse3 = new Horse("Wind", 10, 26);
+        horses.add(horse3);
+        Hippodrome hippodrome = new Hippodrome(horses);
+        assertSame(horse3, hippodrome.getWinner());
+
     }
 }
